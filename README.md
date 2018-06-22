@@ -1,0 +1,2 @@
+
+This repository will show Javascript examples following the guide set by Ryan mcdermott https://github.com/ryanmcdermott/clean-code-javascript based on the book from Robert C. Martin's book Clean Code.
