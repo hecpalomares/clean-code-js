@@ -35,7 +35,6 @@ function emailClients(clients) {
     });
 }
 
-
 // Good: separate the concnerns of checking if the client is active with its own function isActiveClient(), filter those clients and email those who pass that filter. 2 functions clearly separated
 function emailActiveClients(clients) {
     clients
@@ -172,3 +171,93 @@ function showEmployeeList(employees) {
 
 showEmployeeList(developerList);
 showEmployeeList(managerList);
+
+/* Set default objects with Object.assign */
+
+// Bad: by setting the default on the createMenu functions, if the config is missing a property it will throw an error that could be avoided.
+const menuConfig = {
+    title: null,
+    body: 'Bar',
+    buttonText: null,
+    cancellable: true
+};
+  
+function createMenu(config) {
+    config.title = config.title || 'Foo';
+    config.body = config.body || 'Bar';
+    config.buttonText = config.buttonText || 'Baz';
+    config.cancellable = config.cancellable !== undefined ? config.cancellable : true;
+}
+  
+  createMenu(menuConfig);
+
+// Good: Missing 'body' property, Object assing creates the missing property 
+const menuConfigObj = {
+    title: 'Order',
+    // User did not include 'body' key
+    buttonText: 'Send',
+    cancellable: true
+};
+
+function createMenu(config) {
+    // Object.assign takes an object as the first parameter to be replaced and a second object to replace the first object. 
+    // If a property is not found it will use the default property:value set on the first parameter. 
+    // Object.assign makes great for default objects.
+    config = Object.assign({
+        title: 'Foo',
+        body: 'Bar',
+        buttonText: 'Baz',
+        cancellable: true
+    }, config);
+  
+    // config now equals: {title: "Order", body: "Bar", buttonText: "Send", cancellable: true}
+}
+  
+createMenu(menuConfig);
+
+/* Don't use flags as function parameters */
+// Flags means that the functions does more than one thing. Functions should only do one thing (lines 25 - 36).
+
+// Bad
+function createFile(name, temporaryFile) {
+    if (temporaryFile) {
+        fs.create(`./temp/${name}`);
+    } else {
+        fs.create(name);
+    }
+}
+
+// Good
+function createFile(name) {
+    fs.create(name);
+}
+
+function createTempFile(name) {
+    fs.create(`./temp/${name}`);
+}
+
+/* Avoid Side Effects */
+// A function produces a side effect if it does anything other than take a value in and return another value or values.
+// Examples of pitfalls: sharing state between objects without structure, using mutable data types, not centralizing where your side effects occur.
+
+// Bad: If we had another function that used this name, now it'd be an array and it could break it.
+// 'name' variable is mutated for the rest of the application.
+let name = 'Héctor Palomares';
+
+function splitIntoFirstAndLastName() {
+    name = name.split(' ');
+}
+
+splitIntoFirstAndLastName();
+console.log(name); // ['Hector', 'Palomares'];
+
+// Good: 'name' is never mutated, the function returns a new name and is assigned to a brand new variable
+function splitIntoFirstAndLastName(name) {
+    return name.split(" ");
+}
+
+const name = 'Hector Palomares';
+const nameSplitted = splitIntoFirstAndLastName(name);
+
+console.log(name); // 'Hector Palomares';
+console.log(nameSplitted); // ['Hector', 'Palomares'];
