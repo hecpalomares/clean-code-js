@@ -5,14 +5,19 @@
 
 // Bad
 function createMenu(title, body, buttonText, cancellable) {
-    console.log(title, body, buttonText, cancellable);  // Title 1 Body 1 Button 1 false
+    console.log(title, body, buttonText, cancellable); // Title 1 Body 1 Button 1 false
 }
 
 createMenu("Title 1", "Body 1", "Button 1", false);
 
 // Good
-function createMenuObj({title, body, buttonText, cancellable}) {
-    console.log(title, body, buttonText, cancellable);  // Title 2 Body 2 Button 2 true 
+function createMenuObj({
+    title,
+    body,
+    buttonText,
+    cancellable
+}) {
+    console.log(title, body, buttonText, cancellable); // Title 2 Body 2 Button 2 true 
 }
 
 createMenuObj({
@@ -29,7 +34,7 @@ createMenuObj({
 function emailClients(clients) {
     clients.forEach((client) => {
         const clientRecord = client.record;
-        if(clientRecord.isActive()) {
+        if (clientRecord.isActive()) {
             email(client);
         }
     });
@@ -38,8 +43,8 @@ function emailClients(clients) {
 // Good: separate the concnerns of checking if the client is active with its own function isActiveClient(), filter those clients and email those who pass that filter. 2 functions clearly separated
 function emailActiveClients(clients) {
     clients
-    .filter(isActiveClient(client))
-    .map(client => email(client));
+        .filter(isActiveClient(client))
+        .map(client => email(client));
 }
 
 function isActiveClient(client) {
@@ -117,19 +122,19 @@ function lexer(tokens) {
 // Bad: two functions that do almost the same, iterate over a list of employees, get some properties and render the data
 function showDeveloperList(developers) {
     developers.forEach((developer) => {
-      const expectedSalary = developer.calculateExpectedSalary();
-      const experience = developer.getExperience();
-      const githubLink = developer.getGithubLink();
-      const data = {
-        expectedSalary,
-        experience,
-        githubLink
-      };
-  
-      render(data);
+        const expectedSalary = developer.calculateExpectedSalary();
+        const experience = developer.getExperience();
+        const githubLink = developer.getGithubLink();
+        const data = {
+            expectedSalary,
+            experience,
+            githubLink
+        };
+
+        render(data);
     });
-  }
-  
+}
+
 function showManagerList(managers) {
     managers.forEach((manager) => {
         const expectedSalary = manager.calculateExpectedSalary();
@@ -156,7 +161,7 @@ function showEmployeeList(employees) {
             experience
         };
 
-        switch(employee.type) {
+        switch (employee.type) {
             case 'manager':
                 data.portfolio = employee.getMBAProjects();
                 break;
@@ -164,7 +169,7 @@ function showEmployeeList(employees) {
                 data.portfolio = employee.getGithubLink();
                 break;
         }
-    
+
         render(data);
     });
 }
@@ -181,15 +186,15 @@ const menuConfig = {
     buttonText: null,
     cancellable: true
 };
-  
+
 function createMenu(config) {
     config.title = config.title || 'Foo';
     config.body = config.body || 'Bar';
     config.buttonText = config.buttonText || 'Baz';
     config.cancellable = config.cancellable !== undefined ? config.cancellable : true;
 }
-  
-  createMenu(menuConfig);
+
+createMenu(menuConfig);
 
 // Good: Missing 'body' property, Object assing creates the missing property 
 const menuConfigObj = {
@@ -209,10 +214,10 @@ function createMenu(config) {
         buttonText: 'Baz',
         cancellable: true
     }, config);
-  
+
     // config now equals: {title: "Order", body: "Bar", buttonText: "Send", cancellable: true}
 }
-  
+
 createMenu(menuConfig);
 
 /* Don't use flags as function parameters */
@@ -261,3 +266,37 @@ const nameSplitted = splitIntoFirstAndLastName(name);
 
 console.log(name); // 'Hector Palomares';
 console.log(nameSplitted); // ['Hector', 'Palomares'];
+
+/* Avoid Side Effects part 2*/
+// In JS primitives are passed by value and objects/arrays are passed by reference. It is a good pratice to always return new items (clone) and return those clones when modifiyng objects.
+// Bad:
+let countriesNA = ['Canada', 'US', 'Mexico'];
+let countriesAmerica = countriesNA;
+countriesAmerica.push("Brasil", "Argentina");
+
+console.log(countriesNA); // [ 'Canada', 'US', 'Mexico', 'Brasil', 'Argentina' ]
+console.log(countriesNA === countriesNA); // true
+
+// Good
+let countriesNA2 = ['Canada', 'US', 'Mexico'];
+let countriesAmerica2 = [...countriesNA2];
+countriesAmerica.push("Brasil", "Argentina");
+
+console.log(countriesNA2); // [ 'Canada', 'US', 'Mexico' ]
+console.log(countriesNA2 === countriesAmerica); // false
+
+// Bad: try to push the date directly on the cart passed on the parameter
+const addItemToCart = (cart, item) => {
+    cart.push({
+        item,
+        date: Date.now()
+    });
+};
+
+// Good: Return a new cart array (cloned with the old cart parameter) and a the date
+const addItemToCart = (cart, item) => {
+    return [...cart, {
+        item,
+        date: Date.now()
+    }];
+};
