@@ -110,3 +110,70 @@ class Cessna extends Airplane {
         return this.getMaxAltitude() - this.getFuelExpenditure();
     }
 }
+
+/* Avoid type-checking */
+// Doing typecheck of the functions to do certain functionality is a bad practice. The root fix is to have consistent APIs.
+
+// Bad: by checking the instance of vehicle we do different functionality
+function travelToLocation(vehicle, location) {
+    if (vehicle instanceof Bicycle) {
+        vehicle.pedal(this.currentLocation, moveToLocation(location));
+    } else if (vehicle instanceof Car) {
+        vehicle.drive(this.currentLocation, moveToLocation(location));
+    }
+}
+
+// Good: vehicle.move method should handle this logic
+function travelToLocation(vehicle, location) {
+    vehicle.move(this.currentLocation, moveToLocation(location));
+}
+
+// JS requires much extra verbiage to do 'type-safety' if is really required for the project, consider use TypeScript.
+function combine(val1, val2) {
+    if (typeof val1 === 'number' && typeof val2 === 'number' ||
+        typeof val1 === 'string' && typeof val2 === 'string') {
+        return val1 + val2;
+    }
+
+    throw new Error('Must be of type String or Number');
+}
+
+function combine(val1, val2) {
+    return val1 + val2;
+}
+
+/* Don't over-optimize */
+// Modern browsers run a lot optimization code under the hood. By doing this manually in edge cases we are wasting effort.
+
+// Bad: an extra declaration to take in consideration
+for (let i = 0, len = list.length; i < len; i++) {
+    // ...
+}
+
+// Good: moden browswers take care of the extra declaration
+for (let i = 0; i < list.length; i++) {
+    // ...
+}
+
+/* Remove dead code */
+// As bad as duplicated code. Adds extra complexity just living there. Still safe on version control history if needed again.
+
+// Bad:
+function oldRequestModule(url) {
+    // ...
+}
+
+function newRequestModule(url) {
+    // ...
+}
+
+const req = newRequestModule;
+inventoryTracker('apples', req, 'www.inventory.com');
+
+// Good: delete oldRequestModule function
+function newRequestModule(url) {
+    // ...
+}
+
+const req = newRequestModule;
+inventoryTracker('apples', req, 'www.inventory.com');
