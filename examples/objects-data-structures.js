@@ -35,8 +35,8 @@ function makeBankAccount2(id) {
 }
 
 const account2 = makeBankAccount2('572BM');
-account2.balance = 745;
-console.log(account2);   // { id: '572BM', getBalance: [Function: getBalance],  setBalance: [Function: setBalance], balance: 745 }
+account2.setBalance(745);
+console.log(account2.getBalance());   // { 745 }
 
 /* Make objects have private members */
 // Accomplished through closures
