@@ -140,3 +140,41 @@ class CarX {
 }
 
 const carX = new CarX("Chevrolet", "Sonic", "Gray").setColor("Red").save(); // Chevrolet Sonic Red
+
+/* Composition over Inheritance */
+// Trying to model the problem as a composition relation "has-a" instead of inheritance "is-a"
+
+// Bad: Employees "have" tax data. EmployeeTazData is not a type of Employee
+class Employee {
+    constructor(name, email) {
+        this.name = name;
+        this.email = email;
+    }
+}
+
+class EmployeeTaxData extends Employee {
+    constructor(ssn, salary) {
+        super();
+        this.ssn = ssn;
+        this.salary = salary;
+    }
+}
+
+// Good: define a "has-a" relationship with setTaxData method that calls the class EmployeeTaxData
+class EmployeeTaxData {
+    constructor(ssn, salary) {
+        this.ssn = ssn;
+        this.salary = salary;
+    }
+}
+
+class Employee {
+    constructor(name, email) {
+        this.name = name;
+        this.email = email;
+    }
+
+    setTaxData(ssn, salary) {
+        this.taxData = new EmployeeTaxData(ssn, salary);
+    }
+}
