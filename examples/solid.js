@@ -1,6 +1,6 @@
 /** SOLID **/
 
-/* Single Responsability Principle (SRP) */
+/* Single Responsability (SRP) */
 // Functions should seek for high cohesion, all the elements of a module should belong together. By breaking breaking up the functionalities of single responsability the code will be understadable, maintable and testable.
 
 // Bad: function UserSettings is in change of both creating and authenticate/verify the user
@@ -44,7 +44,7 @@ class UserSettings {
     }
 }
 
-/* Open/Closed Principle (OCP) */
+/* Open/Closed (OCP) */
 // Allow users to add new functionalities without changing existing code
 
 // Bad
@@ -123,3 +123,109 @@ class httpRequester {
         });
     }
 }
+
+/* Liskov Substitution (LSP) */
+// If you have a parent class and a child class, then the base class and child class can be used interchangeably without getting incorrect results.
+
+// Bad:
+class Rectangle {
+    constructor() {
+        this.width = 0;
+        this.height = 0;
+    }
+
+    setColor(color) {
+        // ...
+    }
+
+    render(area) {
+        // ...
+    }
+
+    setWidth(width) {
+        this.width = width;
+    }
+
+    setHeight(height) {
+        this.height = height;
+    }
+
+    getArea() {
+        return this.width * this.height;
+    }
+}
+
+class Square extends Rectangle {
+    setWidth(width) {
+    this.width = width;
+    this.height = width;
+  }
+
+  setHeight(height) {
+    this.width = height;
+    this.height = height;
+  }
+}
+
+function renderRectangles(rectangles) {
+  rectangles.forEach((rectangle) => {
+    rectangle.setWidth(4);
+    rectangle.setHeight(5);
+    const area = rectangle.getArea(); // bad, Returns 25 for Square. Should be 20.
+    rectangle.render(area);
+  });
+}
+
+const rectangles = [new Rectangle(), new Rectangle(), new Square()];
+renderRectangles(rectangles);
+
+// Good:
+class Shape {
+    setColor(color) {
+        // ...
+    }
+
+    render(area) {
+        // ...
+    }
+}
+
+class Rectangle extends Shape {
+    constructor(width, height) {
+        super();
+        this.width = width;
+        this.height = height;
+    }
+
+    getArea() {
+        return this.width * this.height;
+    }
+}
+
+class Square extends Shape {
+    constructor(length) {
+        super();
+        this.length = length;
+    }
+
+    getArea() {
+        return this.length * this.length;
+    }
+}
+
+function renderShapes(shapes) {
+  shapes.forEach((shape) => {
+    const area = shape.getArea();
+    shape.render(area);
+  });
+}
+
+const shapes = [new Rectangle(2, 3), new Rectangle(1, 5), new Square(3)];
+renderShapes(shapes);
+
+/* Interface Segregation (ISP) */
+// JS doesn't have interfaces.
+
+/* Dependency Inversion (DIP) */ 
+// High-level modules should not depend on low-level modules. Buth should depend on abstractions.
+// Abstractions should not depend on detials. Details should depend on abstractions.
