@@ -47,7 +47,7 @@ async function getCleanCodeArticle() {
     }
 }
 
-example 1
+// example 1
 function resolveAfter2Seconds() {
     return new Promise(resolve => {
         setTimeout(() => {
